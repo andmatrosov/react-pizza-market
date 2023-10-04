@@ -5,6 +5,11 @@
   &__label {
     display: flex;
     align-items: center;
+    white-space: nowrap;
+
+    @media (max-width: 580px) {
+      font-size: 90%;
+    }
 
     svg {
       margin-right: 8px;
@@ -47,6 +52,10 @@
         &.active {
           font-weight: bold;
           color: $orange;
+        }
+
+        @media (max-width: 580px) {
+          font-size: 90%;
         }
       }
     }

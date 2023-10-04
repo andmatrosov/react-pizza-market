@@ -1,10 +1,30 @@
 @import "../variables";
 
 .categories {
+  margin-right: 30px;
+  padding-bottom: 0;
+
+  @media (max-width: 1300px) {
+    width: 100%;
+    overflow-x: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  @media (max-width: 768px) {
+    margin: 0 20px;
+  }
+
+  &::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
   ul {
     display: flex;
+    flex-wrap: nowrap;
 
     li {
+      display: inline-block;
       background-color: #f9f9f9;
       padding: 13px 30px;
       border-radius: 30px;
