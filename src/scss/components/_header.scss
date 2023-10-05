@@ -13,10 +13,16 @@
     align-items: center;
     justify-content: space-between;
 
+    .header__cart {
+      margin-left: 30px;
+    }
+
     @media (max-width: 645px) {
       flex-direction: column;
 
       .header__cart {
+        margin-left: 0;
+
         margin-top: 20px;
       }
     }

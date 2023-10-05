@@ -1,0 +1,48 @@
+.root {
+	position: relative;
+	margin-right: auto;
+	margin-left: 40px;
+	width: 100%;
+	min-width: 250px;
+	max-width: 400px;
+}
+
+.input {
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	padding: 12px 15px 12px 42px;
+	width: 100%;
+	min-width: 250px;
+	max-width: 400px;
+	border-radius: 10px;
+	font-size: 16px;
+	outline: none;
+
+	&:focus {
+		border: 1px solid rgba(0, 0, 0, 0.3);
+	}
+}
+
+.iconSearch {
+	position: absolute;
+	top: 50%;
+	left: 10px;
+	transform: translateY(-50%);
+	width: 24px;
+	height: 24px;
+	opacity: 0.3;
+}
+
+.iconClear {
+	position: absolute;
+	width: 24px;
+	height: 24px;
+	top: 50%;
+	transform: translateY(-50%);
+	right: 10px;
+	opacity: 0.3;
+
+	&:hover {
+		opacity: 0.7;
+		cursor: pointer;
+	}
+}

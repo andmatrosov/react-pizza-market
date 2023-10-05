@@ -1,0 +1,53 @@
+.root {
+	li {
+		display: inline-block;
+
+		a {
+			display: inline-flex;
+
+			align-items: center;
+			justify-content: center;
+			width: 40px;
+			height: 40px;
+			padding: 10px;
+			border: 2px solid #fe5f1e;
+			border-radius: 30px;
+			transition: all 0.2s;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+			color: #fe5f1e;
+			font-weight: 800;
+
+			&:hover {
+				cursor: pointer;
+				background-color: #fe5f1e;
+				color: #fff;
+			}
+		}
+
+		&:not(:last-child) {
+			margin-right: 10px;
+		}
+	}
+
+	:global {
+		li.selected {
+			a {
+				background-color: #fe5f1e;
+				color: #fff;
+			}
+		}
+		li.disabled {
+			a {
+				&:hover {
+					cursor: not-allowed;
+					background-color: transparent;
+					color: #fe5f1e;
+				}
+				opacity: 0.5;
+			}
+		}
+	}
+}
