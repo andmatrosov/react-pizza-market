@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 import Categories from '../components/Categories/Categories';
 import Sort from '../components/Sort/Sort';
@@ -6,15 +6,23 @@ import PizzaBlock from '../components/PizzaBlock/PizzaBlock';
 import Skeleton from '../components/PizzaBlock/Skeleton';
 import Pagination from '../components/Pagination';
 
-const Home = ({ searchValue }) => {
+import { SearchContext } from '../App';
+
+const Home = () => {
   const [pizzas, setPizzas] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [categoryId, setCategoryId] = useState(0);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [sortType, setSortType] = useState({
     name: 'популярности',
     property: 'rating',
   });
+
+  const { searchValue } = useContext(SearchContext);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [categoryId]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -49,7 +57,7 @@ const Home = ({ searchValue }) => {
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">{isLoading ? skeletons : pizzasList}</div>
 
-      <Pagination onChangePage={(number) => setCurrentPage(number)} />
+      <Pagination onChangePage={(number) => setCurrentPage(number)} currentPage={currentPage} />
     </div>
   );
 };
