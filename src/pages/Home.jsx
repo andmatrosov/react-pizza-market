@@ -1,30 +1,37 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
+import qs from 'qs';
+import { useNavigate } from 'react-router-dom';
 
 import Categories from '../components/Categories/Categories';
-import Sort from '../components/Sort/Sort';
+import Sort, { sortList } from '../components/Sort/Sort';
 import PizzaBlock from '../components/PizzaBlock/PizzaBlock';
 import Skeleton from '../components/PizzaBlock/Skeleton';
 import Pagination from '../components/Pagination';
 
 import { SearchContext } from '../App';
+import { setCategoryId, setFilters } from '../redux/slices/filterSlice';
 
 const Home = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const isSearch = useRef(false);
+  const isMounted = useRef(false);
+
+  const { categoryId, sort: sortType } = useSelector((state) => state.filter);
+  const { currentPage } = useSelector((state) => state.pagination);
+
   const [pizzas, setPizzas] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [categoryId, setCategoryId] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [sortType, setSortType] = useState({
-    name: 'популярности',
-    property: 'rating',
-  });
+
+  const onClickCategory = (id) => {
+    dispatch(setCategoryId(id));
+  };
 
   const { searchValue } = useContext(SearchContext);
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [categoryId]);
-
-  useEffect(() => {
+  const fetchPizza = () => {
     setIsLoading(true);
 
     const sortBy = sortType.property.replace('-', '');
@@ -32,15 +39,53 @@ const Home = () => {
     const category = categoryId > 0 ? `category=${categoryId}` : '';
     const search = searchValue ? `&search=${searchValue}` : '';
 
-    fetch(
-      `https://65103dd23ce5d181df5d0de9.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
-    )
-      .then((res) => res.json())
-      .then((json) => {
-        setPizzas(json);
+    axios
+      .get(
+        `https://65103dd23ce5d181df5d0de9.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
+      )
+      .then((res) => {
+        setPizzas(res.data);
         setIsLoading(false);
       });
+  };
+
+  // Если был первый рендер, то подставляем параметры в URL
+  useEffect(() => {
+    if (isMounted.current) {
+      const querySrting = qs.stringify({
+        sortBy: sortType.property,
+        categoryId,
+        currentPage,
+      });
+      navigate(`?${querySrting}`);
+    }
+    isMounted.current = true;
+  }, [categoryId, sortType, currentPage]);
+
+  // Если был первый рендер, то проверяем URL-параметры и сохраняем в reduce
+  useEffect(() => {
+    if (window.location.search) {
+      const params = qs.parse(window.location.search.substring(1));
+
+      const sort = sortList.find((obj) => obj.property === params.sortBy);
+
+      dispatch(
+        setFilters({
+          ...params,
+          sort,
+        }),
+      );
+      isSearch.current = true;
+    }
+  }, []);
+
+  // Если был первый рендер, то запрашиваем пиццы
+  useEffect(() => {
     window.scrollTo(0, 0);
+    if (!isSearch.current) {
+      fetchPizza();
+    }
+    isSearch.current = false;
   }, [categoryId, sortType, searchValue, currentPage]);
 
   const pizzasList = pizzas
@@ -51,13 +96,13 @@ const Home = () => {
   return (
     <div className="container">
       <div className="content__top">
-        <Categories value={categoryId} onClickCategory={(id) => setCategoryId(id)} />
-        <Sort value={sortType} onClickSort={(id) => setSortType(id)} />
+        <Categories value={categoryId} onClickCategory={onClickCategory} />
+        <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
       <div className="content__items">{isLoading ? skeletons : pizzasList}</div>
 
-      <Pagination onChangePage={(number) => setCurrentPage(number)} currentPage={currentPage} />
+      <Pagination />
     </div>
   );
 };

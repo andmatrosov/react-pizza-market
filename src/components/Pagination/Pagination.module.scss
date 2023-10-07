@@ -41,10 +41,12 @@
 		}
 		li.disabled {
 			a {
+				border-color: #ccc;
+				color: #ccc;
+
 				&:hover {
 					cursor: not-allowed;
 					background-color: transparent;
-					color: #fe5f1e;
 				}
 				opacity: 0.5;
 			}
