@@ -46,6 +46,7 @@ const Home = () => {
       .then((res) => {
         setPizzas(res.data);
         setIsLoading(false);
+        console.log(pizzas);
       });
   };
 
