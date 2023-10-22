@@ -6,6 +6,18 @@ const initialState = {
   items: [],
 };
 
+const updateTotalPrice = (state) => {
+  state.totalPrice = state.items.reduce((sum, obj) => {
+    return obj.price * obj.count + sum;
+  }, 0);
+};
+
+const updateTotalItems = (state) => {
+  state.totalItems = state.items.reduce((sum, obj) => {
+    return obj.count + sum;
+  }, 0);
+};
+
 const cartSlice = createSlice({
   name: 'cart',
   initialState,
@@ -22,13 +34,8 @@ const cartSlice = createSlice({
         });
       }
 
-      state.totalPrice = state.items.reduce((sum, obj) => {
-        return obj.price * obj.count + sum;
-      }, 0);
-
-      state.totalItems = state.items.reduce((sum, obj) => {
-        return obj.count + sum;
-      }, 0);
+      updateTotalItems(state);
+      updateTotalPrice(state);
     },
 
     minusItem(state, action) {
@@ -36,20 +43,24 @@ const cartSlice = createSlice({
 
       if (findItem && findItem.count > 1) {
         findItem.count--;
+        state.totalItems--;
       } else {
         state.items = state.items.filter((obj) => obj.id !== action.payload);
+        state.totalItems--;
       }
 
-      // if (findItem && findItem == 0) {
-      //   removeItem(action.payload);
-      // }
+      updateTotalPrice(state);
     },
 
     removeItem(state, action) {
       state.items = state.items.filter((obj) => obj.id !== action.payload);
+      updateTotalItems(state);
+      updateTotalPrice(state);
     },
     clearItems(state) {
       state.items = [];
+      state.totalPrice = 0;
+      state.totalItems = 0;
     },
   },
 });

@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useEffect, useContext, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import axios from 'axios';
 import qs from 'qs';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,6 +11,7 @@ import Pagination from '../components/Pagination';
 
 import { SearchContext } from '../App';
 import { setCategoryId, setFilters } from '../redux/slices/filterSlice';
+import { fetchPizzas } from '../redux/slices/pizzaSlice';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -21,9 +21,7 @@ const Home = () => {
 
   const { categoryId, sort: sortType } = useSelector((state) => state.filter);
   const { currentPage } = useSelector((state) => state.pagination);
-
-  const [pizzas, setPizzas] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { items, status } = useSelector((state) => state.pizza);
 
   const onClickCategory = (id) => {
     dispatch(setCategoryId(id));
@@ -31,23 +29,23 @@ const Home = () => {
 
   const { searchValue } = useContext(SearchContext);
 
-  const fetchPizza = () => {
-    setIsLoading(true);
-
+  const getPizzas = async () => {
     const sortBy = sortType.property.replace('-', '');
     const order = sortType.property.includes('-') ? 'asc' : 'desc';
     const category = categoryId > 0 ? `category=${categoryId}` : '';
     const search = searchValue ? `&search=${searchValue}` : '';
 
-    axios
-      .get(
-        `https://65103dd23ce5d181df5d0de9.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`,
-      )
-      .then((res) => {
-        setPizzas(res.data);
-        setIsLoading(false);
-        console.log(pizzas);
-      });
+    dispatch(
+      fetchPizzas({
+        sortBy,
+        order,
+        category,
+        search,
+        currentPage,
+      }),
+    );
+
+    window.scrollTo(0, 0);
   };
 
   // Если был первый рендер, то подставляем параметры в URL
@@ -84,12 +82,12 @@ const Home = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     if (!isSearch.current) {
-      fetchPizza();
+      getPizzas();
     }
     isSearch.current = false;
   }, [categoryId, sortType, searchValue, currentPage]);
 
-  const pizzasList = pizzas
+  const pizzasList = items
     .filter((obj) => obj.title.toLowerCase().includes(searchValue.toLowerCase()))
     .map((obj) => <PizzaBlock key={obj.id} {...obj} />);
   const skeletons = [...new Array(4)].map((_, indx) => <Skeleton key={indx} />);
@@ -101,7 +99,14 @@ const Home = () => {
         <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
-      <div className="content__items">{isLoading ? skeletons : pizzasList}</div>
+      {status === 'error' ? (
+        <div className="content__error-info">
+          <h2>Произошла ошибка 😕</h2>{' '}
+          <p>К сожалению, не удалось получить пиццы. Попробуйте повторить попытку позже.</p>
+        </div>
+      ) : (
+        <div className="content__items">{status === 'loading' ? skeletons : pizzasList}</div>
+      )}
 
       <Pagination />
     </div>

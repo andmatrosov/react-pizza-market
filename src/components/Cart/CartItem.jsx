@@ -41,7 +41,7 @@ const CartItem = ({ item }) => {
       <div className="cart__item-info">
         <h3>{title}</h3>
         <p>
-          {pizzaType ? 'тонкое' : 'толстое'} тесто, {size} см.
+          {pizzaType ? 'традиционное' : 'тонкое'} тесто, {size} см.
         </p>
       </div>
       <div className="cart__item-count">

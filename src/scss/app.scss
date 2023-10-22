@@ -32,6 +32,25 @@ body {
 .content {
   padding: 40px 0;
 
+  &__error-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 100px auto;
+    max-width: 500px;
+    text-align: center;
+
+    h2 {
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    p {
+      font-size: 20px;
+    }
+  }
+
   &__title {
     margin: 50px 0;
     font-size: 38px;
@@ -329,7 +348,7 @@ body {
   }
 
   &--empty {
-    margin: 0 auto;
+    margin: 60px auto;
     width: 560px;
     text-align: center;
 
