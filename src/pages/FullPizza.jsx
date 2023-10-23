@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addItem, selectCartItemById } from '../../redux/slices/cartSlice';
+import { useParams } from 'react-router-dom';
+import { addItem, selectCartItemById } from '../redux/slices/cartSlice';
 
-const PizzaBlock = ({ title, price, imageUrl, types, sizes, id }) => {
+const FullPizza = () => {
+  const { id } = useParams();
   const dispatch = useDispatch();
   const cartItem = useSelector(selectCartItemById(id));
+  const [pizza, setPizza] = useState();
   const [pizzaSize, setPizzaSize] = useState(0);
   const [pizzaType, setPizzaType] = useState(0);
 
@@ -13,21 +16,44 @@ const PizzaBlock = ({ title, price, imageUrl, types, sizes, id }) => {
 
   const typeNames = ['тонкое', 'традиционное'];
 
-  const handleAddButton = (obj) => {
-    dispatch(addItem(obj));
-    console.log(id);
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data } = await axios.get(
+          `https://65103dd23ce5d181df5d0de9.mockapi.io/items?id=${id}`,
+        );
+        setPizza(data[0]);
+      } catch (err) {
+        console.log(err);
+      }
+    })();
+  }, []);
+
+  const handleAddButton = (arr) => {
+    const { title, price, imageUrl, id } = arr[0];
+    const pizzaSize = arr[1];
+    const pizzaType = arr[2];
+    dispatch(addItem({ title, price, imageUrl, pizzaSize, pizzaType, id }));
   };
 
+  if (!pizza) {
+    return (
+      <div className="container">
+        <h2>Загрузка...</h2>
+      </div>
+    );
+  }
+
   return (
-    <div className="pizza-block-wrapper">
-      <div className="pizza-block">
-        <Link to={`/pizza/${id}`}>
-          <img className="pizza-block__image" src={imageUrl} alt="Pizza" />
-          <h4 className="pizza-block__title">{title}</h4>
-        </Link>
+    <div className="container container--pizza-full">
+      <div className="pizza-full__img">
+        <img src={pizza.imageUrl} alt="" />
+      </div>
+      <div className=" pizza-full__selector">
+        <h2>{pizza.title}</h2>
         <div className="pizza-block__selector">
           <ul>
-            {types.map((typeId) => (
+            {pizza.types.map((typeId) => (
               <li
                 key={typeId}
                 className={pizzaType === typeId ? 'active' : ''}
@@ -37,7 +63,7 @@ const PizzaBlock = ({ title, price, imageUrl, types, sizes, id }) => {
             ))}
           </ul>
           <ul>
-            {sizes.map((size, indx) => (
+            {pizza.sizes.map((size, indx) => (
               <li
                 key={indx}
                 className={pizzaSize === indx ? 'active' : ''}
@@ -47,11 +73,11 @@ const PizzaBlock = ({ title, price, imageUrl, types, sizes, id }) => {
             ))}
           </ul>
         </div>
-        <div className="pizza-block__bottom">
-          <div className="pizza-block__price">от {price} ₽</div>
+        <div className="pizza-full__bottom">
+          <h4>от {pizza.price} ₽</h4>{' '}
           <button
             className="button button--outline button--add"
-            onClick={() => handleAddButton({ title, price, imageUrl, pizzaType, pizzaSize, id })}>
+            onClick={() => handleAddButton([pizza, pizzaSize, pizzaType])}>
             <svg
               width="12"
               height="12"
@@ -72,4 +98,4 @@ const PizzaBlock = ({ title, price, imageUrl, types, sizes, id }) => {
   );
 };
 
-export default PizzaBlock;
+export default FullPizza;

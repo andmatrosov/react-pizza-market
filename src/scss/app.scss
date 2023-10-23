@@ -115,6 +115,11 @@ body {
       margin: 0;
     }
   }
+
+  &--pizza-full {
+    display: flex;
+    flex: 1 1;
+  }
 }
 
 .cart {

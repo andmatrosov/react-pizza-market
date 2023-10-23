@@ -1,0 +1,33 @@
+.pizza-full {
+	&__img {
+		width: 50%;
+	}
+
+	&__selector {
+		align-self: start;
+		width: 50%;
+		background-color: #fff;
+
+		h2 {
+			font-size: 32px;
+			font-weight: bold;
+			margin-bottom: 20px;
+		}
+
+		ul li {
+			text-align: center;
+		}
+	}
+
+	&__bottom {
+		margin-top: 20px;
+		display: flex;
+		justify-content: flex-end;
+		gap: 40px;
+		align-items: flex-end;
+
+		h4 {
+			font-size: 30px;
+		}
+	}
+}
