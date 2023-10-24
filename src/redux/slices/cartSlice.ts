@@ -1,6 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState = {
+const initialState: {
+  totalPrice: number;
+  totalItems: number;
+  items: {
+    title: string;
+    count: number;
+    price: number;
+    imageUrl: string;
+    id: number;
+    pizzaSize: number;
+    pizzaType: number;
+  }[];
+} = {
   totalPrice: 0,
   totalItems: 0,
   items: [],

@@ -4,15 +4,22 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { addItem, selectCartItemById } from '../redux/slices/cartSlice';
 
-const FullPizza = () => {
+const FullPizza: React.FC = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const cartItem = useSelector(selectCartItemById(id));
-  const [pizza, setPizza] = useState();
-  const [pizzaSize, setPizzaSize] = useState(0);
-  const [pizzaType, setPizzaType] = useState(0);
+  const [pizza, setPizza] = useState<{
+    imageUrl: string;
+    title: string;
+    price: number;
+    types: number[];
+    sizes: number[];
+    id: number;
+  }>();
+  const [pizzaSize, setPizzaSize] = useState<number>(0);
+  const [pizzaType, setPizzaType] = useState<number>(0);
 
-  let addedCount = cartItem ? cartItem.count : 0;
+  const addedCount = cartItem ? cartItem.count : 0;
 
   const typeNames = ['тонкое', 'традиционное'];
 
@@ -29,7 +36,16 @@ const FullPizza = () => {
     })();
   }, []);
 
-  const handleAddButton = (arr) => {
+  interface Pizza {
+    title: string;
+    price: number;
+    imageUrl: string;
+    id: number;
+  }
+
+  type argsArr = [Pizza, number, number];
+
+  const handleAddButton = (arr: argsArr): void => {
     const { title, price, imageUrl, id } = arr[0];
     const pizzaSize = arr[1];
     const pizzaType = arr[2];

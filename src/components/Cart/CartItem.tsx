@@ -1,9 +1,21 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { removeItem, addItem, minusItem } from '../../redux/slices/cartSlice';
 
-const CartItem = ({ item }) => {
-  const { title, price, imageUrl, pizzaSize, pizzaType, count, id } = { ...item };
+type CartItemProps = {
+  item: {
+    title: string;
+    price: number;
+    imageUrl: string;
+    pizzaSize: number;
+    pizzaType: number;
+    count: number;
+    id: number;
+  };
+};
+
+const CartItem: React.FC<CartItemProps> = ({ item }) => {
+  const { title, price, imageUrl, pizzaSize, pizzaType, count, id } = item;
 
   const dispatch = useDispatch();
 
@@ -86,7 +98,7 @@ const CartItem = ({ item }) => {
         </div>
       </div>
       <div className="cart__item-price">
-        <b>{price * count}</b>
+        <b>{(price * count).toLocaleString('ru-RU')} ₽</b>
       </div>
       <div className="cart__item-remove" onClick={removeButtonHandler}>
         <div className="button button--outline button--circle">

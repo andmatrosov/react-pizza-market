@@ -110,7 +110,7 @@ const Cart = () => {
               Всего пицц: <b>{totalCount} шт.</b>
             </span>
             <span>
-              Сумма заказа: <b>{totalPrice} ₽</b>
+              Сумма заказа: <b>{totalPrice.toLocaleString('ru-RU')} ₽</b>
             </span>
           </div>
 
