@@ -1,3 +1,20 @@
+# React pizza market
+
+![Превью проекта](https://github.com/andmatrosov/react-pizza-market/blob/master/preview.png)
+
+[Макет фигма](https://www.figma.com/file/TZzQfNBivfZuZBqoYxYbka/React-Pizza?type=design&node-id=0%3A1&mode=design&t=FNroFsEIsppvx7kj-1)
+
+[GitHub Pages](https://andmatrosov.github.io/react-pizza-market/)
+
+- Functional Components
+- SCSS Modules
+- useEffect
+- React Router
+- React Skeleton Loader
+- Redux Toolkit
+- axios
+- TypeScript
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
