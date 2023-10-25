@@ -10,11 +10,23 @@ import {
   selectCartTotalPrice,
 } from '../redux/slices/cartSlice';
 
-const Cart = () => {
+type CartItemProps = {
+  title: string;
+  price: number;
+  imageUrl: string;
+  pizzaSize: number;
+  pizzaType: number;
+  count: number;
+  id: number;
+};
+
+const Cart: React.FC = () => {
   const dispatch = useDispatch();
   const items = useSelector(selectCart);
   const totalPrice = useSelector(selectCartTotalPrice);
   const totalCount = useSelector(selectCartTotalCount);
+
+  console.log(items);
 
   const clickClearHandler = () => {
     dispatch(clearItems());
@@ -99,7 +111,7 @@ const Cart = () => {
           </div>
         </div>
         <div className="content__items">
-          {items.map((item) => (
+          {items.map((item: CartItemProps) => (
             <CartItem item={item} key={item.id} />
           ))}
         </div>

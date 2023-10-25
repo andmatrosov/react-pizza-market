@@ -18,7 +18,7 @@ export const sortList: SortItem[] = [
 
 const Sort = () => {
   const dispatch = useDispatch();
-  const sort = useSelector((state: any) => state.filter.sort);
+  const sort = useSelector((state) => state.filter.sort);
   const [isOpen, setIsOpen] = useState(false);
 
   const sortRef = useRef<HTMLDivElement>(null);
@@ -29,9 +29,13 @@ const Sort = () => {
   };
 
   useEffect(() => {
-    const handleClickOutside = (event: any) => {
-      const path = event.composedPath ? event.composedPath() : event.path;
-      if (!path.includes(sortRef.current)) {
+    const handleClickOutside = (event: MouseEvent): void => {
+      const _event = event as MouseEvent & {
+        path: Node[];
+        composedPath: () => Node[];
+      };
+      const path = _event.composedPath ? _event.composedPath() : _event.path;
+      if (sortRef.current && !path.includes(sortRef.current)) {
         setIsOpen(false);
       }
     };

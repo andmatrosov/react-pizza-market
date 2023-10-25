@@ -13,7 +13,7 @@ import { selectFilter, setCategoryId, setFilters } from '../redux/slices/filterS
 import { fetchPizzas, selectPizzaData } from '../redux/slices/pizzaSlice';
 import { selectPagination } from '../redux/slices/paginationSlice';
 
-const Home = () => {
+const Home: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isSearch = useRef(false);
@@ -23,7 +23,7 @@ const Home = () => {
   const { currentPage } = useSelector(selectPagination);
   const { items, status } = useSelector(selectPizzaData);
 
-  const onClickCategory = (id) => {
+  const onClickCategory = (id: number): void => {
     dispatch(setCategoryId(id));
   };
 
@@ -34,6 +34,7 @@ const Home = () => {
     const search = searchValue ? `&search=${searchValue}` : '';
 
     dispatch(
+      // @ts-ignore
       fetchPizzas({
         sortBy,
         order,
@@ -86,8 +87,8 @@ const Home = () => {
   }, [categoryId, sortType, searchValue, currentPage]);
 
   const pizzasList = items
-    .filter((obj) => obj.title.toLowerCase().includes(searchValue.toLowerCase()))
-    .map((obj) => <PizzaBlock key={obj.id} {...obj} />);
+    .filter((obj: any) => obj.title.toLowerCase().includes(searchValue.toLowerCase()))
+    .map((obj: any) => <PizzaBlock key={obj.id} {...obj} />);
   const skeletons = [...new Array(4)].map((_, indx) => <Skeleton key={indx} />);
 
   return (
@@ -102,12 +103,8 @@ const Home = () => {
           <h2>Произошла ошибка 😕</h2>{' '}
           <p>К сожалению, не удалось получить пиццы. Попробуйте повторить попытку позже.</p>
         </div>
-      ) : !searchValue ? (
-        <div className="content__items">{status === 'loading' ? skeletons : pizzasList}</div>
       ) : (
-        <div className="content__error-info">
-          <h2>Мы не нашли пицц с таким названием 🥺</h2> <p>Попробуйте ещё раз.</p>
-        </div>
+        <div className="content__items">{status === 'loading' ? skeletons : pizzasList}</div>
       )}
 
       <Pagination />
